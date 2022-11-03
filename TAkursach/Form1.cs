@@ -28,33 +28,34 @@ namespace TAkursach
             string from = File.ReadAllText(Analizator.FileName);
             textBox1.Text = from;
             Analizator analizator = new Analizator(textBox1.Text);
+            //Вывод таблицы лексем
             List<(string, char)> table = analizator.LexemMap;
             foreach(var item in table)
                 LexemTable.Rows.Add(item.Item1 != "\n" ? item.Item1 : "#" , item.Item2);
-
+            //Вывод таблицы ключевых слов
             listBox1.Items.Add("Слова");
             string[] words = analizator.CodeWords;
             foreach (string word in words)
                 listBox1.Items.Add(Array.IndexOf(words, word) + " | " + word);
             listBox1.Items.Add("");
-
+            //Вывод таблицы разделителей
             listBox1.Items.Add("Разделители");
             string[] separs = analizator.CodeSeparators;
             foreach (string sep in separs)
                 listBox1.Items.Add(Array.IndexOf(separs, sep) + " | " + (sep != "\n" ? sep : "#"));
             listBox1.Items.Add("");
-
+            //Вывод таблицы переменные
             listBox1.Items.Add("Переменные");
             List<string> variabls = analizator.CodeVariables;
             foreach (string var in variabls)
                 listBox1.Items.Add(variabls.IndexOf(var) + " | " + var);
             listBox1.Items.Add("");
-
+            //Вывод таблицы чисел
             List<string> literals = analizator.CodeLiterals;
             listBox1.Items.Add("Литералы");
             foreach (string literal in literals)
                 listBox1.Items.Add(literals.IndexOf(literal) + " | " + literal);
-
+            //Вывод таблицы токенов
             List<(int, int)> tokens = analizator.TableTokens;
             foreach(var item in tokens)
                 TokensTable.Rows.Add(item.Item1, item.Item2);
