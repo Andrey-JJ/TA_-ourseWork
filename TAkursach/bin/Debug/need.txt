@@ -1,0 +1,5 @@
+Dim a as integer
+b=1
+do while (a < 10 or b > c)
+   b=b+a
+loop
