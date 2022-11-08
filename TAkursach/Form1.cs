@@ -25,13 +25,11 @@ namespace TAkursach
         }
         private void btnCheckText_Click(object sender, EventArgs e)
         {
-            string from = File.ReadAllText(Analizator.FileName);
-            textBox1.Text = from;
             Analizator analizator = new Analizator(textBox1.Text);
             //Вывод таблицы лексем
             List<(string, char)> table = analizator.LexemMap;
-            foreach(var item in table)
-                LexemTable.Rows.Add(item.Item1 != "\n" ? item.Item1 : "#" , item.Item2);
+            foreach (var item in table)
+                LexemTable.Rows.Add(item.Item1 != "\n" ? item.Item1 : "#", item.Item2);
             //Вывод таблицы ключевых слов
             listBox1.Items.Add("Слова");
             string[] words = analizator.CodeWords;
@@ -59,6 +57,17 @@ namespace TAkursach
             List<(int, int)> tokens = analizator.TableTokens;
             foreach(var item in tokens)
                 TokensTable.Rows.Add(item.Item1, item.Item2);
+        }
+        private void btn_OpenFile_Click(object sender, EventArgs e)
+        {
+            string file = "";
+            OpenFileDialog opfd = new OpenFileDialog();
+            if (opfd.ShowDialog() == DialogResult.OK)
+            {
+                file = File.ReadAllText(opfd.FileName);
+                textBox1.Text = file;
+            }
+            //else MessageBox.Show("Файл не был найден");
         }
     }
 }
