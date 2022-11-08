@@ -36,8 +36,9 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.btn_OpenFile = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.LexemTable)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.TokensTable)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -127,15 +128,6 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Дополнительные таблицы";
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(7, 4);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(132, 16);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "Таблицы значений";
-            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -145,12 +137,32 @@
             this.label2.TabIndex = 6;
             this.label2.Text = "Таблица токенов";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(7, 4);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(132, 16);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "Таблицы значений";
+            // 
+            // btn_OpenFile
+            // 
+            this.btn_OpenFile.Location = new System.Drawing.Point(157, 405);
+            this.btn_OpenFile.Name = "btn_OpenFile";
+            this.btn_OpenFile.Size = new System.Drawing.Size(138, 44);
+            this.btn_OpenFile.TabIndex = 6;
+            this.btn_OpenFile.Text = "Открыть файл";
+            this.btn_OpenFile.UseVisualStyleBackColor = true;
+            this.btn_OpenFile.Click += new System.EventHandler(this.btn_OpenFile_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(812, 460);
+            this.Controls.Add(this.btn_OpenFile);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.btnCheckText);
             this.Controls.Add(this.textBox1);
@@ -183,6 +195,7 @@
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button btn_OpenFile;
     }
 }
 

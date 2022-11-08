@@ -9,31 +9,50 @@ namespace TAkursach
     public class Analizator
     {
         #region Used Variables 
-        public List<(string, char)> LexemMap { get; private set; } //Список исходных лексем
-        static string textfrom; //Считанный текст из файла
-        //Исходный файл с кодом и свойство для данного файла
-        static string filename = "need.txt"; 
+        //Список лексем при первичном анализе
+        public List<(string, char)> LexemMap { get; private set; } 
+        //Текст из файла
+        static string textfrom; 
+        //Имя или путь к исходному файлу
+        static string filename;
+        //Свойство получающее и дающее значение для переменной filename
         public static string FileName { get => filename; set => filename = value; }
-        string buffer_lexem = ""; //Буффер для лексем  
-        static char[] separators = { '+', '-', '/', '*', '>', '=', '<', '\n', '(', ')', '^' }; //разделители
-        static string[] separatorsPairs = { "++", "--", "+=", "-=", "==", "<>", ">=", "<=" }; //Двойные разделители
+        //Временный буффер для лексем
+        string buffer_lexem = "";
+        //Разделители
+        static char[] separators = { '+', '-', '/', '*', '>', '=', '<', '\n', '(', ')', '^' };
+        //Двойные разделители
+        static string[] separatorsPairs = { "++", "--", "+=", "-=", "==", "<>", ">=", "<=" };
         #endregion
         #region Variables Tables
+        //Массив всех разделители
         string[] allSeparators;
-        public string[] CodeSeparators {
-            get { return allSeparators; }
-            private set { allSeparators = value; }
-        }
+        //Свойство получающее значение для переменной allSeparators
+        public string[] CodeSeparators { get => allSeparators; private set => allSeparators = value; }
+        //Массив хранящий ключевые слова яязыка для анализа. Доступен только для чтения
         public readonly string[] CodeWords = new string[] { "or", "while", "do", "Dim", "as", "integer", "loop" };
+        //Список хранящий все переменные полученные после анализа
         List<string> codeVariables = new List<string>();
+        //Свойство получающее значение для переменной codeVariables
         public List<string> CodeVariables { get => codeVariables; private set => codeVariables = value; }
+        //Список хранящий все числовые значения полученные полсе анализа
         List<string> codeLiterals = new List<string>();
+        //Свойство получающее значение для переменной codeLiterals
         public List<string> CodeLiterals { get => codeLiterals; private set => codeLiterals = value; }
+        //Список хранящий значения всех токенов. То есть в списке указывается, что каждый элемент, полученного кода для анализа, ссылается на элемент другого списка
         List<(int, int)> tableTokens = new List<(int, int)>();
+        //Свойство получающее значение для переменной tableTokens
         public List<(int, int)> TableTokens { get => tableTokens; private set => tableTokens = value; }
         #endregion
         #region Class Construct
+        /// <summary>
+        /// Базовый пустой конструктор класса
+        /// </summary>
         public Analizator() {}
+        /// <summary>
+        /// Конструктор класса принимающий на вход код для последующего анализа
+        /// </summary>
+        /// <param name="from"> Строка хранящая код для анализа </param>
         public Analizator(string from)
         {
             textfrom = from;
@@ -48,11 +67,9 @@ namespace TAkursach
         /// Метод поиска дексем в исходном тексте и присвоения каждой лексеме одного из базовых типов(I, D, R)
         /// </summary>
         /// <exception cref="Exception"> Ошибка о некорректно введенных данных </exception>
-        void LexemAnalysis()
-        {
+        void LexemAnalysis() {
             char symbol = ' ', type = ' ';
-            for (int i = 0; i < textfrom.Length; i++) 
-            {
+            for (int i = 0; i < textfrom.Length; i++) {
                 symbol = textfrom[i];
                 if ((int)symbol >= 66 && (int)symbol <= 122)
                     type = 'I';
@@ -94,11 +111,9 @@ namespace TAkursach
         /// Метод получения базового типа лексемы для последующего заполнения или сравнения переменных соответстующих таблиц
         /// </summary>
         /// <exception cref="Exception"> Ошибка при получении неопределенных данных </exception>
-        void ClassificationOfTokens()
-        {
+        void ClassificationOfTokens() {
             int type = 0;
-            for (int i = 0; i < LexemMap.Count; i++)
-            {
+            for (int i = 0; i < LexemMap.Count; i++) {
                 if (CodeWords.Any(LexemMap[i].Item1.Contains))
                     type = 1;
                 else if (allSeparators.Any(LexemMap[i].Item1.Contains))
@@ -118,10 +133,8 @@ namespace TAkursach
         /// <param name="type"> Переменная указывабщая тип таблицы для записи или сравнения переменной </param>
         /// <param name="i"> Переменная отвечающая за индекс текущей переменной </param>
         /// <returns></returns>
-        int GetTokensForlexem(int type, int i)
-        {
-            switch (type)
-            {
+        int GetTokensForlexem(int type, int i) {
+            switch (type) {
                 case 1:
                     for (int j = 0; j < CodeWords.Length; j++)
                         if (CodeWords[j] == LexemMap[i].Item1)
@@ -152,8 +165,7 @@ namespace TAkursach
         /// <summary>
         /// Метод используется для объединения всех разделителей в один массив
         /// </summary>
-        void GetAllSeparators()
-        {
+        void GetAllSeparators() {
             string[] tmp = (from var in separators select var.ToString()).ToArray();
             allSeparators = new string[separators.Length + separatorsPairs.Length];
             Array.Copy(tmp, allSeparators, tmp.Length);
@@ -165,14 +177,15 @@ namespace TAkursach
         /// Метод добавления текущего символа в временный буффер
         /// </summary>
         /// <param name="symbol"> Переменная содержащая полученный символ для добавления </param>
-        void AddToBuffer(char symbol) => buffer_lexem += symbol;
+        void AddToBuffer(char symbol) {
+            buffer_lexem += symbol;
+        }
         /// <summary>
         /// Метод добавления полученной лексемы в таблицу лексем
         /// </summary>
         /// <param name="buffer_lexem"> Временный буффер содержащий лексему </param>
         /// <param name="type"> Переменная содержащая базовый тип лексемы </param>
-        void Out(string buffer_lexem, char type)
-        {
+        void Out(string buffer_lexem, char type) {
             if (buffer_lexem.Length > 0)
             {
                 LexemMap.Add((buffer_lexem, type));
