@@ -25,7 +25,7 @@ namespace TAkursach
         }
         private void btnCheckText_Click(object sender, EventArgs e)
         {
-            Analizator analizator = new Analizator(textBox1.Text);
+            Lexem analizator = new Lexem(textBox1.Text);
             //Вывод таблицы лексем
             List<(string, char)> table = analizator.LexemMap;
             foreach (var item in table)
@@ -54,7 +54,7 @@ namespace TAkursach
             foreach (string literal in literals)
                 listBox1.Items.Add(literals.IndexOf(literal) + " | " + literal);
             //Вывод таблицы токенов
-            List<(int, int)> tokens = analizator.TableTokens;
+            List<(char, int)> tokens = analizator.TableTokens;
             foreach(var item in tokens)
                 TokensTable.Rows.Add(item.Item1, item.Item2);
         }
@@ -67,7 +67,14 @@ namespace TAkursach
                 file = File.ReadAllText(opfd.FileName);
                 textBox1.Text = file;
             }
-            //else MessageBox.Show("Файл не был найден");
+            else MessageBox.Show("Файл не был найден");
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            LexemTable.Rows.Clear();
+            listBox1.Items.Clear();
+            TokensTable.Rows.Clear();
         }
     }
 }

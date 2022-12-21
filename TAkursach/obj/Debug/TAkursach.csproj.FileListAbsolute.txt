@@ -31,3 +31,14 @@ C:\Users\Jake\Desktop\Лабы\ТА\TA_KursWork\TAkursach\obj\Debug\TAkursach.cs
 C:\Users\Jake\Desktop\Лабы\ТА\TA_KursWork\TAkursach\obj\Debug\TAkursach.csproj.CoreCompileInputs.cache
 C:\Users\Jake\Desktop\Лабы\ТА\TA_KursWork\TAkursach\obj\Debug\TAkursach.exe
 C:\Users\Jake\Desktop\Лабы\ТА\TA_KursWork\TAkursach\obj\Debug\TAkursach.pdb
+C:\Users\Jake\Desktop\Лабы\ТА\TA_CourseWork\TAkursach\bin\Debug\TAkursach.exe.config
+C:\Users\Jake\Desktop\Лабы\ТА\TA_CourseWork\TAkursach\bin\Debug\TAkursach.exe
+C:\Users\Jake\Desktop\Лабы\ТА\TA_CourseWork\TAkursach\bin\Debug\TAkursach.pdb
+C:\Users\Jake\Desktop\Лабы\ТА\TA_CourseWork\TAkursach\obj\Debug\TAkursach.csproj.AssemblyReference.cache
+C:\Users\Jake\Desktop\Лабы\ТА\TA_CourseWork\TAkursach\obj\Debug\TAkursach.csproj.SuggestedBindingRedirects.cache
+C:\Users\Jake\Desktop\Лабы\ТА\TA_CourseWork\TAkursach\obj\Debug\TAkursach.Form1.resources
+C:\Users\Jake\Desktop\Лабы\ТА\TA_CourseWork\TAkursach\obj\Debug\TAkursach.Properties.Resources.resources
+C:\Users\Jake\Desktop\Лабы\ТА\TA_CourseWork\TAkursach\obj\Debug\TAkursach.csproj.GenerateResource.cache
+C:\Users\Jake\Desktop\Лабы\ТА\TA_CourseWork\TAkursach\obj\Debug\TAkursach.csproj.CoreCompileInputs.cache
+C:\Users\Jake\Desktop\Лабы\ТА\TA_CourseWork\TAkursach\obj\Debug\TAkursach.exe
+C:\Users\Jake\Desktop\Лабы\ТА\TA_CourseWork\TAkursach\obj\Debug\TAkursach.pdb

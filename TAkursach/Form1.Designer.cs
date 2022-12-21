@@ -39,6 +39,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.btn_OpenFile = new System.Windows.Forms.Button();
+            this.btnClear = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.LexemTable)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.TokensTable)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -71,7 +72,7 @@
             this.LexemTable.Name = "LexemTable";
             this.LexemTable.RowHeadersWidth = 51;
             this.LexemTable.RowTemplate.Height = 24;
-            this.LexemTable.Size = new System.Drawing.Size(439, 345);
+            this.LexemTable.Size = new System.Drawing.Size(517, 345);
             this.LexemTable.TabIndex = 2;
             // 
             // listBox1
@@ -90,7 +91,7 @@
             this.TokensTable.Name = "TokensTable";
             this.TokensTable.RowHeadersWidth = 51;
             this.TokensTable.RowTemplate.Height = 24;
-            this.TokensTable.Size = new System.Drawing.Size(276, 324);
+            this.TokensTable.Size = new System.Drawing.Size(354, 324);
             this.TokensTable.TabIndex = 4;
             // 
             // tabControl1
@@ -100,7 +101,7 @@
             this.tabControl1.Location = new System.Drawing.Point(345, 13);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(459, 386);
+            this.tabControl1.Size = new System.Drawing.Size(537, 386);
             this.tabControl1.TabIndex = 5;
             // 
             // tabPage1
@@ -110,7 +111,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 25);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(451, 357);
+            this.tabPage1.Size = new System.Drawing.Size(529, 357);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Таблица лексем";
             // 
@@ -124,7 +125,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(451, 357);
+            this.tabPage2.Size = new System.Drawing.Size(529, 357);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Дополнительные таблицы";
             // 
@@ -156,12 +157,23 @@
             this.btn_OpenFile.UseVisualStyleBackColor = true;
             this.btn_OpenFile.Click += new System.EventHandler(this.btn_OpenFile_Click);
             // 
+            // btnClear
+            // 
+            this.btnClear.Location = new System.Drawing.Point(349, 405);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(138, 44);
+            this.btnClear.TabIndex = 7;
+            this.btnClear.Text = "Очистка";
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(812, 460);
+            this.ClientSize = new System.Drawing.Size(894, 460);
+            this.Controls.Add(this.btnClear);
             this.Controls.Add(this.btn_OpenFile);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.btnCheckText);
@@ -196,6 +208,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btn_OpenFile;
+        private System.Windows.Forms.Button btnClear;
     }
 }
 
