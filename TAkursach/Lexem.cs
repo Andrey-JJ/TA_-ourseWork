@@ -20,7 +20,7 @@ namespace TAkursach
         //Временный буффер для лексем
         string buffer_lexem = "";
         //Разделители
-        static char[] separators = { '+', '-', '/', '*', '>', '=', '<', '\n', '(', ')', '^' };
+        static char[] separators = { '+', '-', '/', '*', '>', '=', '<', '\n', '(', ')', '^', ',' };
         //Двойные разделители
         static string[] separatorsPairs = { "++", "--", "+=", "-=", "==", "<>", ">=", "<=" };
         #endregion

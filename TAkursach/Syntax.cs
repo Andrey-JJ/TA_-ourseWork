@@ -87,6 +87,9 @@ namespace TAkursach
                     case 22:
                         State22();
                         break;
+                    case 23:
+                        State23();
+                        break;
                     case 24:
                         State24();
                         break;
@@ -170,10 +173,12 @@ namespace TAkursach
                         break;
                 }
             }
-            if (!error)
+            if(isEnd)
                 MessageBox.Show("Синтаксический разбор выполнен успешно", "Уведомление", MessageBoxButtons.OK);
-            else
-                MessageBox.Show("Синтаксический разбор был закончен с ошибкой", "Ошибка", MessageBoxButtons.OK);
+            //if (!error)
+            //    MessageBox.Show("Синтаксический разбор выполнен успешно", "Уведомление", MessageBoxButtons.OK);
+            //else
+            //    MessageBox.Show("Синтаксический разбор был закончен с ошибкой", "Ошибка", MessageBoxButtons.OK);
         }
         string Error()
         {
@@ -353,7 +358,7 @@ namespace TAkursach
         void State8()
         {
             if (stack.Peek() == "<опер>")
-                Convolution(3, "<спис_опер>");
+                Convolution(1, "<спис_опер>");
         }
         void State9()
         {
@@ -420,7 +425,7 @@ namespace TAkursach
                     GoToState(24);
                     break;
                 case "<опер>":
-                    GoToState(8);
+                    GoToState(23);
                     break;
                 case "<цикл>":
                     GoToState(9);
@@ -448,12 +453,7 @@ namespace TAkursach
             {
                 case "while":
                     Shift();
-                    break;
-                case "(":
-                    Expr(3);
-                    break;
-                case "id":
-                    Expr(3);
+                    //Expr(9);
                     break;
                 case "expr":
                     GoToState(26);
@@ -508,6 +508,11 @@ namespace TAkursach
                     GoToState(32);
                     break; 
             }
+        }
+        void State23()
+        {
+            if (stack.Peek() == "<опер>")
+                Convolution(3, "<спис_опер>");
         }
         void State24()
         {
@@ -775,7 +780,7 @@ namespace TAkursach
                     GoToState(51);
                     break;
                 case "<опер>":
-                    GoToState(8);
+                    GoToState(23);
                     break;
                 case "<цикл>":
                     GoToState(9);
@@ -814,7 +819,7 @@ namespace TAkursach
                 Shift();
                 stateStack.Push(100);
             }
-            Convolution(count, "expr");
+            Convolution(count + 1, "expr");
         }
     }
 }
