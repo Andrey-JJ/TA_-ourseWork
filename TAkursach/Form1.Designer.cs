@@ -40,6 +40,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.btn_OpenFile = new System.Windows.Forms.Button();
             this.btnClear = new System.Windows.Forms.Button();
+            this.btnSyntax = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.LexemTable)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.TokensTable)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -149,7 +150,7 @@
             // 
             // btn_OpenFile
             // 
-            this.btn_OpenFile.Location = new System.Drawing.Point(157, 405);
+            this.btn_OpenFile.Location = new System.Drawing.Point(345, 405);
             this.btn_OpenFile.Name = "btn_OpenFile";
             this.btn_OpenFile.Size = new System.Drawing.Size(138, 44);
             this.btn_OpenFile.TabIndex = 6;
@@ -159,13 +160,23 @@
             // 
             // btnClear
             // 
-            this.btnClear.Location = new System.Drawing.Point(349, 405);
+            this.btnClear.Location = new System.Drawing.Point(489, 405);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(138, 44);
             this.btnClear.TabIndex = 7;
-            this.btnClear.Text = "Очистка";
+            this.btnClear.Text = "Очистка вывода";
             this.btnClear.UseVisualStyleBackColor = true;
             this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            // 
+            // btnSyntax
+            // 
+            this.btnSyntax.Location = new System.Drawing.Point(157, 405);
+            this.btnSyntax.Name = "btnSyntax";
+            this.btnSyntax.Size = new System.Drawing.Size(138, 44);
+            this.btnSyntax.TabIndex = 8;
+            this.btnSyntax.Text = "Синтаксис";
+            this.btnSyntax.UseVisualStyleBackColor = true;
+            this.btnSyntax.Click += new System.EventHandler(this.btnSyntax_Click);
             // 
             // Form1
             // 
@@ -173,6 +184,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(894, 460);
+            this.Controls.Add(this.btnSyntax);
             this.Controls.Add(this.btnClear);
             this.Controls.Add(this.btn_OpenFile);
             this.Controls.Add(this.tabControl1);
@@ -209,6 +221,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btn_OpenFile;
         private System.Windows.Forms.Button btnClear;
+        private System.Windows.Forms.Button btnSyntax;
     }
 }
 

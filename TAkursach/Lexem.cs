@@ -30,7 +30,7 @@ namespace TAkursach
         //Свойство получающее значение для переменной allSeparators
         public string[] CodeSeparators { get => allSeparators; private set => allSeparators = value; }
         //Массив хранящий ключевые слова яязыка для анализа. Доступен только для чтения
-        public readonly string[] CodeWords = new string[] { "or", "while", "do", "Dim", "as", "integer", "loop" };
+        public readonly string[] CodeWords = new string[] { "Public", "Sub", "Main", "EndSub", "or", "while", "do", "Dim", "as", "integer", "loop" };
         //Список хранящий все переменные полученные после анализа
         List<string> codeVariables = new List<string>();
         //Свойство получающее значение для переменной codeVariables
@@ -132,7 +132,7 @@ namespace TAkursach
         /// </summary>
         /// <param name="type"> Переменная указывабщая тип таблицы для записи или сравнения переменной </param>
         /// <param name="i"> Переменная отвечающая за индекс текущей переменной </param>
-        /// <returns></returns>
+        /// <returns> Возвращает значение type 0, для последующего заполнения </returns>
         int GetTokensForlexem(int type, int i) {
             switch (type) {
                 case 1:

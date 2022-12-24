@@ -3,22 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace TAkursach
 {
     public class Syntax
     {
         static bool isEnd = false;
+        bool error = false;
         int state = 0;
         int lexnumber = 0;
         static Stack<string> stack = new Stack<string>();
         static Stack<int> stateStack = new Stack<int>();
-        //List<(char, int)> list = new List<(char, int)>();
         Lexem lexAnalis;
-        public Syntax(Lexem lexem)
-        {
-            this.lexAnalis = lexem;
-        }
+        public Syntax(Lexem lexem) => this.lexAnalis = lexem;
         public void CheckSyntax()
         {
             GoToState(0);
@@ -26,6 +24,9 @@ namespace TAkursach
             {
                 switch (state)
                 {
+                    case -1:
+                        error = true;
+                        break;
                     case 0:
                         State0();
                         break;
@@ -85,9 +86,6 @@ namespace TAkursach
                         break;
                     case 22:
                         State22();
-                        break;
-                    case 23:
-                        State23();
                         break;
                     case 24:
                         State24();
@@ -172,6 +170,15 @@ namespace TAkursach
                         break;
                 }
             }
+            if (!error)
+                MessageBox.Show("Синтаксический разбор выполнен успешно", "Уведомление", MessageBoxButtons.OK);
+            else
+                MessageBox.Show("Синтаксический разбор был закончен с ошибкой", "Ошибка", MessageBoxButtons.OK);
+        }
+        string Error()
+        {
+            state = -1;
+            return "Ошибка";
         }
         void Shift()
         {
@@ -201,132 +208,613 @@ namespace TAkursach
             stateStack.Push(i);
             this.state = i;
         }
+        void ProgramEnd()
+        {
+            isEnd = true;
+            stack.Clear();
+            stateStack.Clear();
+            lexnumber = 0;
+        }
+        private void Convolution(int count, string N)
+        {
+            if(count == 0)
+                stack.Push(N);
+            else
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    stack.Pop();
+                    state = stateStack.Pop();
+                    state = stateStack.Peek();
+                }
+                state = stateStack.Peek();
+                stack.Push(N);
+            }
+        }
         void State0()
         {
-            if (GetLexeme(lexnumber) != "Public")
-                throw new Exception();
+            if(stack.Count == 0)
+                Shift();
+            switch (stack.Peek())
+            {
+                case "<программа>":
+                    ProgramEnd();
+                    break;
+                case "Public":
+                    GoToState(1);
+                    break;
+            }
         }
         void State1()
         {
-            if (GetLexeme(lexnumber) != "Sub")
-                throw new Exception();
-            Shift();
+            switch (stack.Peek())
+            {
+                case "Public":
+                    Shift();
+                    break;
+                case "Sub":
+                    GoToState(2);
+                    break;
+            }
         }
         void State2()
         {
-            if (GetLexeme(lexnumber) != "Main")
-                throw new Exception();
-            Shift();
+            switch (stack.Peek())
+            {
+                case "Sub":
+                    Shift();
+                    break;
+                case "Main":
+                    GoToState(3);
+                    break;
+            }
         }
         void State3()
         {
-            if (GetLexeme(lexnumber) != "(")
-                throw new Exception();
-            Shift();
+            switch (stack.Peek())
+            {
+                case "Main":
+                    Shift();
+                    break;
+                case "(":
+                    GoToState(4);
+                    break;
+            }
         }
         void State4()
         {
-            if (GetLexeme(lexnumber) != ")")
-                throw new Exception();
-            Shift();
+            switch (stack.Peek())
+            {
+                case "(":
+                    Shift();
+                    break;
+                case ")":
+                    GoToState(5);
+                    break;
+            }
         }
         void State5()
         {
-            if (GetLexeme(lexnumber) != "\n")
-                throw new Exception();
-            Shift();
+            switch (stack.Peek())
+            {
+                case ")":
+                    Shift();
+                    break;
+                case "\n":
+                    GoToState(6);
+                    break;
+            }
         }
         void State6()
         {
-            if (GetLexeme(lexnumber) != "")
-                throw new Exception();
-            Shift();
+            switch (stack.Peek())
+            {
+                case "\n":
+                    Shift();
+                    break;
+                case "<спис_опер>":
+                    GoToState(7);
+                    break;
+                case "<опер>":
+                    GoToState(8);
+                    break;
+                case "<цикл>":
+                    GoToState(9);
+                    break;
+                case "<присв>":
+                    GoToState(10);
+                    break;
+                case "<опис>":
+                    GoToState(11);
+                    break;
+                case "do":
+                    GoToState(12);
+                    break;
+                case "id":
+                    GoToState(13);
+                    break;
+                case "Dim":
+                    GoToState(15);
+                    break;
+            }
         }
         void State7()
-        { }
-        void State8()
-        { }
-        void State9()
-        { }
-        void State10()
-        { }
-        void State11()
-        { }
-        void State12()
-        { }
-        void State13()
-        { }
-        void State15()
-        { }
-        void State16()
-        { }
-        void State18()
-        { }
-        void State19()
-        { }
-        void State21()
-        { }
-        void State22()
-        { }
-        void State23()
-        { }
-        void State24()
-        { }
-        void State26()
-        { }
-        void State27()
-        { }
-        void State28()
-        { }
-        void State29()
-        { }
-        void State30()
-        { }
-        void State31()
-        { }
-        void State32()
-        { }
-        void State33()
-        { }
-        void State34()
-        { }
-        void State35()
-        { }
-        void State36()
-        { }
-        void State37()
-        { }
-        void State38()
-        { }
-        void State39()
-        { }
-        void State40()
-        { }
-        void State41()
-        { }
-        void State42()
-        { }
-        void State43()
-        { }
-        void State44()
-        { }
-        void State45()
-        { }
-        void State46()
-        { }
-        void State47()
-        { }
-        void State48()
-        { }
-        void State49()
-        { }
-        void State50()
-        { }
-        void State51()
-        { }
-        void Expr()
         {
-
+            switch (stack.Peek())
+            {
+                case "<спис_опер>":
+                    Shift();
+                    break;
+                case "\n":
+                    GoToState(16);
+                    break;
+            }
+        }
+        void State8()
+        {
+            if (stack.Peek() == "<опер>")
+                Convolution(3, "<спис_опер>");
+        }
+        void State9()
+        {
+            if (stack.Peek() == "<цикл>")
+                Convolution(1, "<опер>");
+        }
+        void State10()
+        {
+            if (stack.Peek() == "<присв>")
+                Convolution(1, "<опер>");
+        }
+        void State11()
+        {
+            if (stack.Peek() == "<опис>")
+                Convolution(1, "<опер>");
+        }
+        void State12()
+        {
+            switch (stack.Peek())
+            {
+                case "do":
+                    Shift();
+                    break;
+                case "while":
+                    GoToState(18);
+                    break;
+            }
+        }
+        void State13()
+        {
+            switch (stack.Peek())
+            {
+                case "id":
+                    Shift();
+                    break;
+                case "=":
+                    GoToState(19);
+                    break;
+            }
+        }
+        void State15()
+        {
+            switch (stack.Peek())
+            {
+                case "Dim":
+                    Shift();
+                    break;
+                case "<спис_перем>":
+                    GoToState(21);
+                    break;
+                case "id":
+                    GoToState(22);
+                    break;
+            }
+        }
+        void State16()
+        {
+            switch (stack.Peek())
+            {
+                case "\n":
+                    Shift();
+                    break;
+                case "EndSub":
+                    GoToState(24);
+                    break;
+                case "<опер>":
+                    GoToState(8);
+                    break;
+                case "<цикл>":
+                    GoToState(9);
+                    break;
+                case "<присв>":
+                    GoToState(10);
+                    break;
+                case "<опис>":
+                    GoToState(11);
+                    break;
+                case "do":
+                    GoToState(12);
+                    break;
+                case "id":
+                    GoToState(13);
+                    break;
+                case "Dim":
+                    GoToState(15);
+                    break;
+            }
+        }
+        void State18()
+        {
+            switch (stack.Peek())
+            {
+                case "while":
+                    Shift();
+                    break;
+                case "(":
+                    Expr(3);
+                    break;
+                case "id":
+                    Expr(3);
+                    break;
+                case "expr":
+                    GoToState(26);
+                    break;
+            }
+        }
+        void State19()
+        {
+            switch (stack.Peek())
+            {
+                case "=":
+                    Shift();
+                    break;
+                case "<ариф_выр>":
+                    GoToState(27);
+                    break;
+                case "<операнд>":
+                    GoToState(28);
+                    break;
+                case "id":
+                    GoToState(29);
+                    break;
+                case "lit":
+                    GoToState(30);
+                    break;
+            }
+        }
+        void State21()
+        {
+            switch (stack.Peek())
+            {
+                case "<спис_перем>":
+                    Shift();
+                    break;
+                case "as":
+                    GoToState(31);
+                    break;
+            }
+        }
+        void State22()
+        {
+            switch (stack.Peek())
+            {
+                case "id":
+                    if (GetLexeme(lexnumber) == "as")
+                        Convolution(1, "<спис_перем>");
+                    else if (GetLexeme(lexnumber) == ",")
+                        Shift();
+                    else Error();
+                    break;
+                case ",":
+                    GoToState(32);
+                    break; 
+            }
+        }
+        void State24()
+        {
+            if (stack.Peek() == "EndSub")
+                Convolution(9, "<программа>");
+        }
+        void State26()
+        {
+            switch (stack.Peek())
+            {
+                case "expr":
+                    Shift();
+                    break;
+                case "#":
+                    GoToState(33);
+                    break;
+            }
+        }
+        void State27()
+        {
+            if (stack.Peek() == "<ариф_выр>")
+                Convolution(1, "<присв>");
+        }
+        void State28()
+        {
+            switch (stack.Peek())
+            {
+                case "<операнд>":
+                    if (GetLexeme(lexnumber) == "\n")
+                        Convolution(3, "<присв>");
+                    else if(GetLexeme(lexnumber) == "<знак>")
+                        Shift();
+                    else
+                        Error();
+                    break;
+                case "<знак>":
+                    GoToState(34);
+                    break;
+                case "+":
+                    GoToState(35);
+                    break;
+                case "-":
+                    GoToState(36);
+                    break;
+                case "*":
+                    GoToState(37);
+                    break;
+                case "/":
+                    GoToState(38);
+                    break;
+                case "^":
+                    GoToState(39);
+                    break;
+            }
+        }
+        void State29()
+        {
+            if (stack.Peek() == "id")
+                Convolution(1, "<операнд>");
+        }
+        void State30()
+        {
+            if (stack.Peek() == "lit")
+                Convolution(1, "<операнд>");
+        }
+        void State31()
+        {
+            switch (stack.Peek())
+            {
+                case "as":
+                    Shift();
+                    break;
+                case "<тип>":
+                    GoToState(40);
+                    break;
+                case "integer":
+                    GoToState(41);
+                    break;
+                case "float":
+                    GoToState(42);
+                    break;
+                case "long":
+                    GoToState(43);
+                    break;
+            }
+        }
+        void State32()
+        {
+            switch (stack.Peek())
+            {
+                case ",":
+                    Shift();
+                    break;
+                case "<спис_перем>":
+                    GoToState(44);
+                    break;
+                case "id":
+                    GoToState(22);
+                    break;
+            }
+        }
+        void State33()
+        {
+            switch (stack.Peek())
+            {
+                case "\n":
+                    Shift();
+                    break;
+                case "<спис_опер>":
+                    GoToState(7);
+                    break;
+                case "<опер>":
+                    GoToState(8);
+                    break;
+                case "<цикл>":
+                    GoToState(9);
+                    break;
+                case "<присв>":
+                    GoToState(10);
+                    break;
+                case "<опис>":
+                    GoToState(11);
+                    break;
+                case "do":
+                    GoToState(12);
+                    break;
+                case "id":
+                    GoToState(13);
+                    break;
+                case "Dim":
+                    GoToState(15);
+                    break;
+            }
+        }
+        void State34()
+        {
+            switch (stack.Peek())
+            {
+                case "<знак>":
+                    Shift();
+                    break;
+                case "<операнд>":
+                    GoToState(46);
+                    break;
+                case "id":
+                    GoToState(29);
+                    break;
+                case "lit":
+                    GoToState(30);
+                    break;
+            }
+        }
+        void State35()
+        {
+            if (stack.Peek() == "+")
+                Convolution(1, "<знак>");
+        }
+        void State36()
+        {
+            if (stack.Peek() == "-")
+                Convolution(1, "<знак>");
+        }
+        void State37()
+        {
+            if (stack.Peek() == "*")
+                Convolution(1, "<знак>");
+        }
+        void State38()
+        {
+            if (stack.Peek() == "/")
+                Convolution(1, "<знак>");
+        }
+        void State39()
+        {
+            if (stack.Peek() == "^")
+                Convolution(1, "<знак>");
+        }
+        void State40()
+        {
+            switch (stack.Peek())
+            {
+                case "<тип>":
+                    if (GetLexeme(lexnumber) == "\n")
+                        Convolution(0, "<иниц>");
+                    else if (GetLexeme(lexnumber) == "=")
+                        Shift();
+                    else Error();
+                    break;
+                case "<иниц>":
+                    GoToState(47);
+                    break;
+                case "=":
+                    GoToState(48);
+                    break;
+            }
+        }
+        void State41()
+        {
+            if (stack.Peek() == "integer")
+                Convolution(1, "<тип>");
+        }
+        void State42()
+        {
+            if (stack.Peek() == "float")
+                Convolution(1, "<тип>");
+        }
+        void State43()
+        {
+            if (stack.Peek() == "long")
+                Convolution(1, "<тип>");
+        }
+        void State44()
+        {
+            if (stack.Peek() == "<спис_перем>")
+                Convolution(3, "<спис_перем>");
+        }
+        void State45()
+        {
+            switch (stack.Peek())
+            {
+                case "<спис_опер>":
+                    Shift();
+                    break;
+                case "\n":
+                    GoToState(49);
+                    break;
+            }
+        }
+        void State46()
+        {
+            if (stack.Peek() == "<операнд>")
+                Convolution(3, "<ариф_выр>");
+        }
+        void State47()
+        {
+            if (stack.Peek() == "<иниц>")
+                Convolution(5, "<опис>");
+        }
+        void State48()
+        {
+            switch (stack.Peek())
+            {
+                case "=":
+                    Shift();
+                    break;
+                case "<операнд>":
+                    GoToState(50);
+                    break;
+                case "id":
+                    GoToState(29);
+                    break;
+                case "lit":
+                    GoToState(30);
+                    break;
+            }
+        }
+        void State49()
+        {
+            switch (stack.Peek())
+            {
+                case "\n":
+                    Shift();
+                    break;
+                case "loop":
+                    GoToState(51);
+                    break;
+                case "<опер>":
+                    GoToState(8);
+                    break;
+                case "<цикл>":
+                    GoToState(9);
+                    break;
+                case "<присв>":
+                    GoToState(10);
+                    break;
+                case "<опис>":
+                    GoToState(11);
+                    break;
+                case "do":
+                    GoToState(12);
+                    break;
+                case "id":
+                    GoToState(13);
+                    break;
+                case "Dim":
+                    GoToState(15);
+                    break;
+            }
+        }
+        void State50()
+        {
+            if (stack.Peek() == "<операнд>")
+                Convolution(2, "<иниц>");
+        }
+        void State51()
+        {
+            if (stack.Peek() == "loop")
+                Convolution(7, "<цикл>");
+        }
+        void Expr(int count)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                Shift();
+                stateStack.Push(100);
+            }
+            Convolution(count, "expr");
         }
     }
 }
