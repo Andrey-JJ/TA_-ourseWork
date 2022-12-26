@@ -190,7 +190,6 @@
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.btnCheckText);
             this.Controls.Add(this.textBox1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "Form1";
             this.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.ShowIcon = false;

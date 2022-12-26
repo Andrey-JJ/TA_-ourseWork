@@ -174,16 +174,25 @@ namespace TAkursach
                 }
             }
             if(isEnd)
-                MessageBox.Show("Синтаксический разбор выполнен успешно", "Уведомление", MessageBoxButtons.OK);
-            //if (!error)
-            //    MessageBox.Show("Синтаксический разбор выполнен успешно", "Уведомление", MessageBoxButtons.OK);
-            //else
-            //    MessageBox.Show("Синтаксический разбор был закончен с ошибкой", "Ошибка", MessageBoxButtons.OK);
+            {
+                if (!error)
+                    MessageBox.Show("Синтаксический разбор выполнен успешно", "Уведомление", MessageBoxButtons.OK);
+                else
+                    MessageBox.Show("Синтаксический разбор был закончен с ошибкой", "Уведомление", MessageBoxButtons.OK);
+                state = 0;
+            }
         }
-        string Error()
+        void Error(string lexem, string expectedlexems)
         {
             state = -1;
-            return "Ошибка";
+            try
+            {
+                throw new MissingExceptions(lexem, expectedlexems);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK);
+            }
         }
         void Shift()
         {
@@ -192,20 +201,29 @@ namespace TAkursach
         }
         string GetLexeme(int number)
         {
-            char lexType = lexAnalis.TableTokens[number].Item1;
-            int i = lexAnalis.TableTokens[number].Item2;
-            switch (lexType) 
+            try
             {
-                case 'K':
-                    return lexAnalis.CodeWords[i];
-                case 'S':
-                    return lexAnalis.CodeSeparators[i];
-                case 'L':
-                    return "lit";
-                case 'V':
-                    return "id";
-                default:
-                    return "Something";
+                char lexType = lexAnalis.TableTokens[number].Item1;
+                int i = lexAnalis.TableTokens[number].Item2;
+                switch (lexType)
+                {
+                    case 'K':
+                        return lexAnalis.CodeWords[i];
+                    case 'S':
+                        return lexAnalis.CodeSeparators[i];
+                    case 'L':
+                        return "lit";
+                    case 'V':
+                        return "id";
+                    default:
+                        return "undefined";
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Так как лексический анализ был произведен с ошибкой,\n то невозможно произвести синтаксический анализ", "", MessageBoxButtons.OK);
+                state = -1;
+                return "undefined";
             }
         }
         void GoToState(int i)
@@ -248,6 +266,9 @@ namespace TAkursach
                 case "Public":
                     GoToState(1);
                     break;
+                default:
+                    Error(stack.Peek(), "Public");
+                    break;
             }
         }
         void State1()
@@ -259,6 +280,9 @@ namespace TAkursach
                     break;
                 case "Sub":
                     GoToState(2);
+                    break;
+                default:
+                    Error(stack.Peek(), "Sub");
                     break;
             }
         }
@@ -272,6 +296,9 @@ namespace TAkursach
                 case "Main":
                     GoToState(3);
                     break;
+                default:
+                    Error(stack.Peek(), "Main");
+                    break;
             }
         }
         void State3()
@@ -283,6 +310,9 @@ namespace TAkursach
                     break;
                 case "(":
                     GoToState(4);
+                    break;
+                default:
+                    Error(stack.Peek(), "(");
                     break;
             }
         }
@@ -296,6 +326,9 @@ namespace TAkursach
                 case ")":
                     GoToState(5);
                     break;
+                default:
+                    Error(stack.Peek(), ")");
+                    break;
             }
         }
         void State5()
@@ -307,6 +340,9 @@ namespace TAkursach
                     break;
                 case "\n":
                     GoToState(6);
+                    break;
+                default:
+                    Error(stack.Peek(), "/n");
                     break;
             }
         }
@@ -341,6 +377,9 @@ namespace TAkursach
                 case "Dim":
                     GoToState(15);
                     break;
+                default:
+                    Error(stack.Peek(), "do, id, dim");
+                    break;
             }
         }
         void State7()
@@ -352,6 +391,9 @@ namespace TAkursach
                     break;
                 case "\n":
                     GoToState(16);
+                    break;
+                default:
+                    Error(stack.Peek(), "/n");
                     break;
             }
         }
@@ -385,6 +427,9 @@ namespace TAkursach
                 case "while":
                     GoToState(18);
                     break;
+                default:
+                    Error(stack.Peek(), "while");
+                    break;
             }
         }
         void State13()
@@ -396,6 +441,9 @@ namespace TAkursach
                     break;
                 case "=":
                     GoToState(19);
+                    break;
+                default:
+                    Error(stack.Peek(), "=");
                     break;
             }
         }
@@ -411,6 +459,9 @@ namespace TAkursach
                     break;
                 case "id":
                     GoToState(22);
+                    break;
+                default:
+                    Error(stack.Peek(), "id");
                     break;
             }
         }
@@ -445,6 +496,9 @@ namespace TAkursach
                 case "Dim":
                     GoToState(15);
                     break;
+                default:
+                    Error(stack.Peek(), "do, id, Dim");
+                    break;
             }
         }
         void State18()
@@ -453,10 +507,15 @@ namespace TAkursach
             {
                 case "while":
                     Shift();
-                    //Expr(9);
+                    break;
+                case "(":
+                    Expr(8);
                     break;
                 case "expr":
                     GoToState(26);
+                    break;
+                default:
+                    Error(stack.Peek(), "expr");
                     break;
             }
         }
@@ -479,6 +538,9 @@ namespace TAkursach
                 case "lit":
                     GoToState(30);
                     break;
+                default:
+                    Error(stack.Peek(), "id, lit");
+                    break;
             }
         }
         void State21()
@@ -491,6 +553,9 @@ namespace TAkursach
                 case "as":
                     GoToState(31);
                     break;
+                default:
+                    Error(stack.Peek(), "as");
+                    break;
             }
         }
         void State22()
@@ -502,11 +567,14 @@ namespace TAkursach
                         Convolution(1, "<спис_перем>");
                     else if (GetLexeme(lexnumber) == ",")
                         Shift();
-                    else Error();
+                    else Error(stack.Peek(), "as или , после id");
                     break;
                 case ",":
                     GoToState(32);
-                    break; 
+                    break;
+                default:
+                    Error(stack.Peek(), ",");
+                    break;
             }
         }
         void State23()
@@ -526,7 +594,7 @@ namespace TAkursach
                 case "expr":
                     Shift();
                     break;
-                case "#":
+                case "\n":
                     GoToState(33);
                     break;
             }
@@ -546,7 +614,7 @@ namespace TAkursach
                     else if(GetLexeme(lexnumber) == "<знак>")
                         Shift();
                     else
-                        Error();
+                        Error(stack.Peek(), "/n, +, -, *, /,  ^");
                     break;
                 case "<знак>":
                     GoToState(34);
@@ -565,6 +633,9 @@ namespace TAkursach
                     break;
                 case "^":
                     GoToState(39);
+                    break;
+                default:
+                    Error(stack.Peek(), "+, -, *, /, ^");
                     break;
             }
         }
@@ -597,6 +668,9 @@ namespace TAkursach
                 case "long":
                     GoToState(43);
                     break;
+                default:
+                    Error(stack.Peek(), "integer, float, long");
+                    break;
             }
         }
         void State32()
@@ -611,6 +685,9 @@ namespace TAkursach
                     break;
                 case "id":
                     GoToState(22);
+                    break;
+                default:
+                    Error(stack.Peek(), "id");
                     break;
             }
         }
@@ -645,6 +722,9 @@ namespace TAkursach
                 case "Dim":
                     GoToState(15);
                     break;
+                default:
+                    Error(stack.Peek(), "do, id, Dim");
+                    break;
             }
         }
         void State34()
@@ -662,6 +742,9 @@ namespace TAkursach
                     break;
                 case "lit":
                     GoToState(30);
+                    break;
+                default:
+                    Error(stack.Peek(), "id или lit");
                     break;
             }
         }
@@ -699,13 +782,16 @@ namespace TAkursach
                         Convolution(0, "<иниц>");
                     else if (GetLexeme(lexnumber) == "=")
                         Shift();
-                    else Error();
+                    else Error(stack.Peek(), "/n или =");
                     break;
                 case "<иниц>":
                     GoToState(47);
                     break;
                 case "=":
                     GoToState(48);
+                    break;
+                default:
+                    Error(stack.Peek(), "/n или =");
                     break;
             }
         }
@@ -739,6 +825,9 @@ namespace TAkursach
                 case "\n":
                     GoToState(49);
                     break;
+                default:
+                    Error(stack.Peek(), "/n");
+                    break;
             }
         }
         void State46()
@@ -766,6 +855,9 @@ namespace TAkursach
                     break;
                 case "lit":
                     GoToState(30);
+                    break;
+                default:
+                    Error(stack.Peek(), "id или lit");
                     break;
             }
         }
@@ -799,6 +891,9 @@ namespace TAkursach
                     break;
                 case "Dim":
                     GoToState(15);
+                    break;
+                default:
+                    Error(stack.Peek(), "loop, do, id, Dim");
                     break;
             }
         }

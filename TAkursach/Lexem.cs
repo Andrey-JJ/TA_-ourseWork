@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace TAkursach
 {
@@ -67,44 +68,53 @@ namespace TAkursach
         /// Метод поиска дексем в исходном тексте и присвоения каждой лексеме одного из базовых типов(I, D, R)
         /// </summary>
         /// <exception cref="Exception"> Ошибка о некорректно введенных данных </exception>
-        void LexAnalysis() {
-            char symbol = ' ', type = ' ';
-            for (int i = 0; i < textfrom.Length; i++) {
-                symbol = textfrom[i];
-                if ((int)symbol >= 66 && (int)symbol <= 122)
-                    type = 'I';
-                else if (Char.IsDigit(symbol))
-                    type = 'D';
-                else if (separators.Contains(symbol))
-                    type = 'R';
-                else if (symbol == ' ' || symbol == '\r' || symbol == '\t')
-                    continue;
-                else
-                    throw new Exception($"Введен не корректный символ - {symbol}");
-                switch (type)
+        void LexAnalysis() 
+        {
+            try
+            {
+                char symbol = ' ', type = ' ';
+                for (int i = 0; i < textfrom.Length; i++)
                 {
-                    case 'I':
-                        AddToBuffer(textfrom[i]);
-                        if ((i+1 < textfrom.Length) && (CheckIsLetter(textfrom[i + 1]) || Char.IsDigit(textfrom[i + 1])))
-                        { i++; goto case 'I'; }
-                        else
-                        { Out(buffer_lexem, type); type = ' '; }
-                        break;
-                    case 'D':
-                        AddToBuffer(textfrom[i]);
-                        if ((i + 1 < textfrom.Length) && Char.IsDigit(textfrom[i + 1]))
-                        { i++; goto case 'D'; }
-                        else
-                        { Out(buffer_lexem, type); type = ' '; }
-                        break;
-                    case 'R':
-                        AddToBuffer(textfrom[i]);
-                        if ((i + 1 < textfrom.Length) && CheckDoubleSepars(textfrom[i + 1]))
-                        { i++; goto case 'R'; }
-                        else
-                        { Out(buffer_lexem, type); type = ' '; }
-                        break;
+                    symbol = textfrom[i];
+                    if ((int)symbol >= 66 && (int)symbol <= 122)
+                        type = 'I';
+                    else if (Char.IsDigit(symbol))
+                        type = 'D';
+                    else if (separators.Contains(symbol))
+                        type = 'R';
+                    else if (symbol == ' ' || symbol == '\r' || symbol == '\t')
+                        continue;
+                    else
+                        throw new Exception($"Введен не корректный символ - {symbol}");
+                    switch (type)
+                    {
+                        case 'I':
+                            AddToBuffer(textfrom[i]);
+                            if ((i + 1 < textfrom.Length) && (CheckIsLetter(textfrom[i + 1]) || Char.IsDigit(textfrom[i + 1])))
+                            { i++; goto case 'I'; }
+                            else
+                            { Out(buffer_lexem, type); type = ' '; }
+                            break;
+                        case 'D':
+                            AddToBuffer(textfrom[i]);
+                            if ((i + 1 < textfrom.Length) && Char.IsDigit(textfrom[i + 1]))
+                            { i++; goto case 'D'; }
+                            else
+                            { Out(buffer_lexem, type); type = ' '; }
+                            break;
+                        case 'R':
+                            AddToBuffer(textfrom[i]);
+                            if ((i + 1 < textfrom.Length) && CheckDoubleSepars(textfrom[i + 1]))
+                            { i++; goto case 'R'; }
+                            else
+                            { Out(buffer_lexem, type); type = ' '; }
+                            break;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK);
             }
         }
         /// <summary>
@@ -112,19 +122,27 @@ namespace TAkursach
         /// </summary>
         /// <exception cref="Exception"> Ошибка при получении неопределенных данных </exception>
         void ClassificationOfTokens() {
-            int type = 0;
-            for (int i = 0; i < LexemMap.Count; i++) {
-                if (CodeWords.Any(LexemMap[i].Item1.Contains))
-                    type = 1;
-                else if (allSeparators.Any(LexemMap[i].Item1.Contains))
-                    type = 2;
-                else if (LexemMap[i].Item2 == 'I')
-                    type = 3;
-                else if (LexemMap[i].Item2 == 'D')
-                    type = 4;
-                else
-                    throw new Exception("Неопределенные данные в таблице");
-                type = GetTokensForlexem(type, i);
+            try
+            {
+                int type = 0;
+                for (int i = 0; i < LexemMap.Count; i++)
+                {
+                    if (CodeWords.Any(LexemMap[i].Item1.Contains))
+                        type = 1;
+                    else if (allSeparators.Any(LexemMap[i].Item1.Contains))
+                        type = 2;
+                    else if (LexemMap[i].Item2 == 'I')
+                        type = 3;
+                    else if (LexemMap[i].Item2 == 'D')
+                        type = 4;
+                    else
+                        throw new Exception("Неопределенные данные в таблице");
+                    type = GetTokensForlexem(type, i);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK);
             }
         }
         /// <summary>

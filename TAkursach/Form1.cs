@@ -61,7 +61,6 @@ namespace TAkursach
             List<(char, int)> tokens = lexemAnalysator.TableTokens;
             foreach(var item in tokens)
                 TokensTable.Rows.Add(item.Item1, item.Item2);
-            
         }
         private void btn_OpenFile_Click(object sender, EventArgs e)
         {
