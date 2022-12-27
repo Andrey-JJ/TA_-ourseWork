@@ -933,7 +933,7 @@ namespace TAkursach
         void Dijkstra(Queue<string> line)
         {
             Queue<string> revPolNat = OPN(line);
-            Stack<String> stack = new Stack<String>();
+            Stack<string> stack = new Stack<string>();
             int m = 1;
             while(revPolNat.Count != 0)
             {
