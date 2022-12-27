@@ -31,7 +31,7 @@ namespace TAkursach
         //Свойство получающее значение для переменной allSeparators
         public string[] CodeSeparators { get => allSeparators; private set => allSeparators = value; }
         //Массив хранящий ключевые слова яязыка для анализа. Доступен только для чтения
-        public readonly string[] CodeWords = new string[] { "Public", "Sub", "Main", "EndSub", "or", "while", "do", "Dim", "as", "integer", "loop" };
+        public readonly string[] CodeWords = new string[] { "Public", "Sub", "Main", "EndSub", "or", "and", "not", "while", "do", "Dim", "as", "integer", "loop" };
         //Список хранящий все переменные полученные после анализа
         List<string> codeVariables = new List<string>();
         //Свойство получающее значение для переменной codeVariables

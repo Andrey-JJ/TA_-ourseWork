@@ -9,23 +9,23 @@ namespace TAkursach
 {
     public class Syntax
     {
-        static bool isEnd = false;
-        bool error = false;
+        bool isEnd = false;
         int state = 0;
-        int lexnumber = 0;
-        static Stack<string> stack = new Stack<string>();
-        static Stack<int> stateStack = new Stack<int>();
+        int nextLex = 0;
+        Stack<string> lexemStack = new Stack<string>();
+        Stack<int> stateStack = new Stack<int>();
+        public List<string> matrix = new List<string>();
         Lexem lexAnalis;
         public Syntax(Lexem lexem) => this.lexAnalis = lexem;
         public void CheckSyntax()
         {
             GoToState(0);
-            while (!isEnd)
+            while (isEnd != true)
             {
                 switch (state)
                 {
                     case -1:
-                        error = true;
+                        isEnd = true;
                         break;
                     case 0:
                         State0();
@@ -175,11 +175,11 @@ namespace TAkursach
             }
             if(isEnd)
             {
-                if (!error)
+                if (state != -1)
                     MessageBox.Show("Синтаксический разбор выполнен успешно", "Уведомление", MessageBoxButtons.OK);
                 else
                     MessageBox.Show("Синтаксический разбор был закончен с ошибкой", "Уведомление", MessageBoxButtons.OK);
-                state = 0;
+                return;
             }
         }
         void Error(string lexem, string expectedlexems)
@@ -196,34 +196,43 @@ namespace TAkursach
         }
         void Shift()
         {
-            stack.Push(GetLexeme(lexnumber));
-            lexnumber++;
+            lexemStack.Push(GetLexeme(nextLex));
+            nextLex++;
         }
         string GetLexeme(int number)
         {
-            try
+            char lexType = lexAnalis.TableTokens[number].Item1;
+            int i = lexAnalis.TableTokens[number].Item2;
+            switch (lexType)
             {
-                char lexType = lexAnalis.TableTokens[number].Item1;
-                int i = lexAnalis.TableTokens[number].Item2;
-                switch (lexType)
-                {
-                    case 'K':
-                        return lexAnalis.CodeWords[i];
-                    case 'S':
-                        return lexAnalis.CodeSeparators[i];
-                    case 'L':
-                        return "lit";
-                    case 'V':
-                        return "id";
-                    default:
-                        return "undefined";
-                }
+                case 'K':
+                    return lexAnalis.CodeWords[i];
+                case 'S':
+                    return lexAnalis.CodeSeparators[i];
+                case 'L':
+                    return "lit";
+                case 'V':
+                    return "id";
+                default:
+                    return "undefined";
             }
-            catch
+        }
+        string GetDijLexeme(int number)
+        {
+            char lexType = lexAnalis.TableTokens[number].Item1;
+            int i = lexAnalis.TableTokens[number].Item2;
+            switch (lexType)
             {
-                MessageBox.Show("Так как лексический анализ был произведен с ошибкой,\n то невозможно произвести синтаксический анализ", "", MessageBoxButtons.OK);
-                state = -1;
-                return "undefined";
+                case 'K':
+                    return lexAnalis.CodeWords[i];
+                case 'S':
+                    return lexAnalis.CodeSeparators[i];
+                case 'L':
+                    return lexAnalis.CodeLiterals[i];
+                case 'V':
+                    return lexAnalis.CodeVariables[i];
+                default:
+                    return "undefined";
             }
         }
         void GoToState(int i)
@@ -234,31 +243,31 @@ namespace TAkursach
         void ProgramEnd()
         {
             isEnd = true;
-            stack.Clear();
+            lexemStack.Clear();
             stateStack.Clear();
-            lexnumber = 0;
+            nextLex = 0;
         }
         private void Convolution(int count, string N)
         {
             if(count == 0)
-                stack.Push(N);
+                lexemStack.Push(N);
             else
             {
                 for (int i = 0; i < count; i++)
                 {
-                    stack.Pop();
+                    lexemStack.Pop();
                     state = stateStack.Pop();
                     state = stateStack.Peek();
                 }
                 state = stateStack.Peek();
-                stack.Push(N);
+                lexemStack.Push(N);
             }
         }
         void State0()
         {
-            if(stack.Count == 0)
+            if(lexemStack.Count == 0)
                 Shift();
-            switch (stack.Peek())
+            switch (lexemStack.Peek())
             {
                 case "<программа>":
                     ProgramEnd();
@@ -267,13 +276,13 @@ namespace TAkursach
                     GoToState(1);
                     break;
                 default:
-                    Error(stack.Peek(), "Public");
+                    Error(lexemStack.Peek(), "Public");
                     break;
             }
         }
         void State1()
         {
-            switch (stack.Peek())
+            switch (lexemStack.Peek())
             {
                 case "Public":
                     Shift();
@@ -282,13 +291,13 @@ namespace TAkursach
                     GoToState(2);
                     break;
                 default:
-                    Error(stack.Peek(), "Sub");
+                    Error(lexemStack.Peek(), "Sub после Public");
                     break;
             }
         }
         void State2()
         {
-            switch (stack.Peek())
+            switch (lexemStack.Peek())
             {
                 case "Sub":
                     Shift();
@@ -297,13 +306,13 @@ namespace TAkursach
                     GoToState(3);
                     break;
                 default:
-                    Error(stack.Peek(), "Main");
+                    Error(lexemStack.Peek(), "Main после Sub");
                     break;
             }
         }
         void State3()
         {
-            switch (stack.Peek())
+            switch (lexemStack.Peek())
             {
                 case "Main":
                     Shift();
@@ -312,13 +321,13 @@ namespace TAkursach
                     GoToState(4);
                     break;
                 default:
-                    Error(stack.Peek(), "(");
+                    Error(lexemStack.Peek(), "( после Main");
                     break;
             }
         }
         void State4()
         {
-            switch (stack.Peek())
+            switch (lexemStack.Peek())
             {
                 case "(":
                     Shift();
@@ -327,13 +336,13 @@ namespace TAkursach
                     GoToState(5);
                     break;
                 default:
-                    Error(stack.Peek(), ")");
+                    Error(lexemStack.Peek(), ") после (");
                     break;
             }
         }
         void State5()
         {
-            switch (stack.Peek())
+            switch (lexemStack.Peek())
             {
                 case ")":
                     Shift();
@@ -342,13 +351,13 @@ namespace TAkursach
                     GoToState(6);
                     break;
                 default:
-                    Error(stack.Peek(), "/n");
+                    Error(lexemStack.Peek(), "/n после )");
                     break;
             }
         }
         void State6()
         {
-            switch (stack.Peek())
+            switch (lexemStack.Peek())
             {
                 case "\n":
                     Shift();
@@ -378,13 +387,13 @@ namespace TAkursach
                     GoToState(15);
                     break;
                 default:
-                    Error(stack.Peek(), "do, id, dim");
+                    Error(lexemStack.Peek(), "либо do, либо id, либо dim");
                     break;
             }
         }
         void State7()
         {
-            switch (stack.Peek())
+            switch (lexemStack.Peek())
             {
                 case "<спис_опер>":
                     Shift();
@@ -393,33 +402,33 @@ namespace TAkursach
                     GoToState(16);
                     break;
                 default:
-                    Error(stack.Peek(), "/n");
+                    Error(lexemStack.Peek(), "/n");
                     break;
             }
         }
         void State8()
         {
-            if (stack.Peek() == "<опер>")
+            if (lexemStack.Peek() == "<опер>")
                 Convolution(1, "<спис_опер>");
         }
         void State9()
         {
-            if (stack.Peek() == "<цикл>")
+            if (lexemStack.Peek() == "<цикл>")
                 Convolution(1, "<опер>");
         }
         void State10()
         {
-            if (stack.Peek() == "<присв>")
+            if (lexemStack.Peek() == "<присв>")
                 Convolution(1, "<опер>");
         }
         void State11()
         {
-            if (stack.Peek() == "<опис>")
+            if (lexemStack.Peek() == "<опис>")
                 Convolution(1, "<опер>");
         }
         void State12()
         {
-            switch (stack.Peek())
+            switch (lexemStack.Peek())
             {
                 case "do":
                     Shift();
@@ -428,13 +437,13 @@ namespace TAkursach
                     GoToState(18);
                     break;
                 default:
-                    Error(stack.Peek(), "while");
+                    Error(lexemStack.Peek(), "while после do");
                     break;
             }
         }
         void State13()
         {
-            switch (stack.Peek())
+            switch (lexemStack.Peek())
             {
                 case "id":
                     Shift();
@@ -443,13 +452,13 @@ namespace TAkursach
                     GoToState(19);
                     break;
                 default:
-                    Error(stack.Peek(), "=");
+                    Error(lexemStack.Peek(), "= после id");
                     break;
             }
         }
         void State15()
         {
-            switch (stack.Peek())
+            switch (lexemStack.Peek())
             {
                 case "Dim":
                     Shift();
@@ -461,13 +470,13 @@ namespace TAkursach
                     GoToState(22);
                     break;
                 default:
-                    Error(stack.Peek(), "id");
+                    Error(lexemStack.Peek(), "id после Dim");
                     break;
             }
         }
         void State16()
         {
-            switch (stack.Peek())
+            switch (lexemStack.Peek())
             {
                 case "\n":
                     Shift();
@@ -497,31 +506,28 @@ namespace TAkursach
                     GoToState(15);
                     break;
                 default:
-                    Error(stack.Peek(), "do, id, Dim");
+                    Error(lexemStack.Peek(), "либо do, либо id, либо Dim");
                     break;
             }
         }
         void State18()
         {
-            switch (stack.Peek())
+            switch (lexemStack.Peek())
             {
                 case "while":
-                    Shift();
-                    break;
-                case "(":
-                    Expr(8);
+                    Expr();
                     break;
                 case "expr":
                     GoToState(26);
                     break;
                 default:
-                    Error(stack.Peek(), "expr");
+                    Error(lexemStack.Peek(), "expr после while");
                     break;
             }
         }
         void State19()
         {
-            switch (stack.Peek())
+            switch (lexemStack.Peek())
             {
                 case "=":
                     Shift();
@@ -539,13 +545,13 @@ namespace TAkursach
                     GoToState(30);
                     break;
                 default:
-                    Error(stack.Peek(), "id, lit");
+                    Error(lexemStack.Peek(), "id или lit после =");
                     break;
             }
         }
         void State21()
         {
-            switch (stack.Peek())
+            switch (lexemStack.Peek())
             {
                 case "<спис_перем>":
                     Shift();
@@ -554,42 +560,42 @@ namespace TAkursach
                     GoToState(31);
                     break;
                 default:
-                    Error(stack.Peek(), "as");
+                    Error(lexemStack.Peek(), "as после id");
                     break;
             }
         }
         void State22()
         {
-            switch (stack.Peek())
+            switch (lexemStack.Peek())
             {
                 case "id":
-                    if (GetLexeme(lexnumber) == "as")
+                    if (GetLexeme(nextLex) == "as")
                         Convolution(1, "<спис_перем>");
-                    else if (GetLexeme(lexnumber) == ",")
+                    else if (GetLexeme(nextLex) == ",")
                         Shift();
-                    else Error(stack.Peek(), "as или , после id");
+                    else Error(lexemStack.Peek(), "as или , после id");
                     break;
                 case ",":
                     GoToState(32);
                     break;
                 default:
-                    Error(stack.Peek(), ",");
+                    Error(lexemStack.Peek(), ", после id");
                     break;
             }
         }
         void State23()
         {
-            if (stack.Peek() == "<опер>")
+            if (lexemStack.Peek() == "<опер>")
                 Convolution(3, "<спис_опер>");
         }
         void State24()
         {
-            if (stack.Peek() == "EndSub")
+            if (lexemStack.Peek() == "EndSub")
                 Convolution(9, "<программа>");
         }
         void State26()
         {
-            switch (stack.Peek())
+            switch (lexemStack.Peek())
             {
                 case "expr":
                     Shift();
@@ -597,24 +603,27 @@ namespace TAkursach
                 case "\n":
                     GoToState(33);
                     break;
+                default:
+                    Error(lexemStack.Peek(), "/n после expr");
+                    break;
             }
         }
         void State27()
         {
-            if (stack.Peek() == "<ариф_выр>")
-                Convolution(1, "<присв>");
+            if (lexemStack.Peek() == "<ариф_выр>")
+                Convolution(3, "<присв>");
         }
         void State28()
         {
-            switch (stack.Peek())
+            switch (lexemStack.Peek())
             {
                 case "<операнд>":
-                    if (GetLexeme(lexnumber) == "\n")
+                    if (GetLexeme(nextLex) == "\n")
                         Convolution(3, "<присв>");
-                    else if(GetLexeme(lexnumber) == "<знак>")
+                    else if(GetLexeme(nextLex) == "+" || GetLexeme(nextLex) == "-" || GetLexeme(nextLex) == "*" || GetLexeme(nextLex) == "/" || GetLexeme(nextLex) == "^")
                         Shift();
                     else
-                        Error(stack.Peek(), "/n, +, -, *, /,  ^");
+                        Error(lexemStack.Peek(), "что-то из следующего списка: /n, +, -, *, /,  ^");
                     break;
                 case "<знак>":
                     GoToState(34);
@@ -635,23 +644,23 @@ namespace TAkursach
                     GoToState(39);
                     break;
                 default:
-                    Error(stack.Peek(), "+, -, *, /, ^");
+                    Error(lexemStack.Peek(), "что-то из следующего списка: +, -, *, /, ^");
                     break;
             }
         }
         void State29()
         {
-            if (stack.Peek() == "id")
+            if (lexemStack.Peek() == "id")
                 Convolution(1, "<операнд>");
         }
         void State30()
         {
-            if (stack.Peek() == "lit")
+            if (lexemStack.Peek() == "lit")
                 Convolution(1, "<операнд>");
         }
         void State31()
         {
-            switch (stack.Peek())
+            switch (lexemStack.Peek())
             {
                 case "as":
                     Shift();
@@ -669,13 +678,13 @@ namespace TAkursach
                     GoToState(43);
                     break;
                 default:
-                    Error(stack.Peek(), "integer, float, long");
+                    Error(lexemStack.Peek(), "либо integer, либо float, либо long");
                     break;
             }
         }
         void State32()
         {
-            switch (stack.Peek())
+            switch (lexemStack.Peek())
             {
                 case ",":
                     Shift();
@@ -687,19 +696,19 @@ namespace TAkursach
                     GoToState(22);
                     break;
                 default:
-                    Error(stack.Peek(), "id");
+                    Error(lexemStack.Peek(), "id после ,");
                     break;
             }
         }
         void State33()
         {
-            switch (stack.Peek())
+            switch (lexemStack.Peek())
             {
                 case "\n":
                     Shift();
                     break;
                 case "<спис_опер>":
-                    GoToState(7);
+                    GoToState(45);
                     break;
                 case "<опер>":
                     GoToState(8);
@@ -723,13 +732,13 @@ namespace TAkursach
                     GoToState(15);
                     break;
                 default:
-                    Error(stack.Peek(), "do, id, Dim");
+                    Error(lexemStack.Peek(), "либо do, либо id, либо Dim");
                     break;
             }
         }
         void State34()
         {
-            switch (stack.Peek())
+            switch (lexemStack.Peek())
             {
                 case "<знак>":
                     Shift();
@@ -744,45 +753,45 @@ namespace TAkursach
                     GoToState(30);
                     break;
                 default:
-                    Error(stack.Peek(), "id или lit");
+                    Error(lexemStack.Peek(), "id или lit");
                     break;
             }
         }
         void State35()
         {
-            if (stack.Peek() == "+")
+            if (lexemStack.Peek() == "+")
                 Convolution(1, "<знак>");
         }
         void State36()
         {
-            if (stack.Peek() == "-")
+            if (lexemStack.Peek() == "-")
                 Convolution(1, "<знак>");
         }
         void State37()
         {
-            if (stack.Peek() == "*")
+            if (lexemStack.Peek() == "*")
                 Convolution(1, "<знак>");
         }
         void State38()
         {
-            if (stack.Peek() == "/")
+            if (lexemStack.Peek() == "/")
                 Convolution(1, "<знак>");
         }
         void State39()
         {
-            if (stack.Peek() == "^")
+            if (lexemStack.Peek() == "^")
                 Convolution(1, "<знак>");
         }
         void State40()
         {
-            switch (stack.Peek())
+            switch (lexemStack.Peek())
             {
                 case "<тип>":
-                    if (GetLexeme(lexnumber) == "\n")
+                    if (GetLexeme(nextLex) == "\n")
                         Convolution(0, "<иниц>");
-                    else if (GetLexeme(lexnumber) == "=")
+                    else if (GetLexeme(nextLex) == "=")
                         Shift();
-                    else Error(stack.Peek(), "/n или =");
+                    else Error(lexemStack.Peek(), "/n или = после integer, float или long");
                     break;
                 case "<иниц>":
                     GoToState(47);
@@ -791,33 +800,33 @@ namespace TAkursach
                     GoToState(48);
                     break;
                 default:
-                    Error(stack.Peek(), "/n или =");
+                    Error(lexemStack.Peek(), "= после integer, float или long");
                     break;
             }
         }
         void State41()
         {
-            if (stack.Peek() == "integer")
+            if (lexemStack.Peek() == "integer")
                 Convolution(1, "<тип>");
         }
         void State42()
         {
-            if (stack.Peek() == "float")
+            if (lexemStack.Peek() == "float")
                 Convolution(1, "<тип>");
         }
         void State43()
         {
-            if (stack.Peek() == "long")
+            if (lexemStack.Peek() == "long")
                 Convolution(1, "<тип>");
         }
         void State44()
         {
-            if (stack.Peek() == "<спис_перем>")
+            if (lexemStack.Peek() == "<спис_перем>")
                 Convolution(3, "<спис_перем>");
         }
         void State45()
         {
-            switch (stack.Peek())
+            switch (lexemStack.Peek())
             {
                 case "<спис_опер>":
                     Shift();
@@ -826,23 +835,23 @@ namespace TAkursach
                     GoToState(49);
                     break;
                 default:
-                    Error(stack.Peek(), "/n");
+                    Error(lexemStack.Peek(), "/n");
                     break;
             }
         }
         void State46()
         {
-            if (stack.Peek() == "<операнд>")
+            if (lexemStack.Peek() == "<операнд>")
                 Convolution(3, "<ариф_выр>");
         }
         void State47()
         {
-            if (stack.Peek() == "<иниц>")
+            if (lexemStack.Peek() == "<иниц>")
                 Convolution(5, "<опис>");
         }
         void State48()
         {
-            switch (stack.Peek())
+            switch (lexemStack.Peek())
             {
                 case "=":
                     Shift();
@@ -857,13 +866,13 @@ namespace TAkursach
                     GoToState(30);
                     break;
                 default:
-                    Error(stack.Peek(), "id или lit");
+                    Error(lexemStack.Peek(), "id или lit после =");
                     break;
             }
         }
         void State49()
         {
-            switch (stack.Peek())
+            switch (lexemStack.Peek())
             {
                 case "\n":
                     Shift();
@@ -893,28 +902,152 @@ namespace TAkursach
                     GoToState(15);
                     break;
                 default:
-                    Error(stack.Peek(), "loop, do, id, Dim");
+                    Error(lexemStack.Peek(), "loop для завершения do while или do, id, Dim для последующих действий");
                     break;
             }
         }
         void State50()
         {
-            if (stack.Peek() == "<операнд>")
+            if (lexemStack.Peek() == "<операнд>")
                 Convolution(2, "<иниц>");
         }
         void State51()
         {
-            if (stack.Peek() == "loop")
+            if (lexemStack.Peek() == "loop")
                 Convolution(7, "<цикл>");
         }
-        void Expr(int count)
+        void Expr()
         {
-            for (int i = 0; i < count; i++)
+            Queue<string> line = new Queue<string>();
+            int count = 0;
+            while(GetLexeme(nextLex) != "\n")
             {
+                line.Enqueue((GetDijLexeme(nextLex)));
                 Shift();
                 stateStack.Push(100);
+                count++;
             }
-            Convolution(count + 1, "expr");
+            Dijkstra(line);
+            Convolution(count, "expr");
+        }
+        void Dijkstra(Queue<string> line)
+        {
+            Queue<string> revPolNat = OPN(line);
+            Stack<String> stack = new Stack<String>();
+            int m = 1;
+            while(revPolNat.Count != 0)
+            {
+                string lexem = revPolNat.Dequeue();
+                if(lexAnalis.CodeVariables.Contains(lexem) || lexAnalis.CodeLiterals.Contains(lexem))
+                {
+                    stack.Push(lexem);
+                }
+                else
+                {
+                    string temp = "";
+                    for(int i = 0; i < 2; i++)
+                    {
+                        temp += stack.Pop() + " ";
+                    }
+                    matrix.Add($"M{m}: {lexem} {temp}");
+                    stack.Push($"M{m}");
+                    m++;
+                }
+            }
+        }
+        Queue<string> OPN(Queue<string> line)
+        {
+            Stack<string> stackOp = new Stack<string>();
+            Queue<string> resultLine = new Queue<string>();
+            while (line.Count != 0)
+            {
+                string lexem = line.Dequeue();
+                if (lexem == "(")
+                {
+                    stackOp.Push(lexem);
+                }
+                else if (lexAnalis.CodeVariables.Contains(lexem) || lexAnalis.CodeLiterals.Contains(lexem))
+                {
+                    resultLine.Enqueue(lexem);
+                }
+                else if (lexem == "+" || lexem == "-" || lexem == "*" || lexem == "/" || lexem == "^" ||
+                        lexem == "==" || lexem == "<>" || lexem == "<" || lexem == ">" ||
+                        lexem == "or" || lexem == "and" || lexem == "not")
+                {
+                    int priority = LexemPriorit(lexem);
+                    if (priority == 0)
+                    {
+                        stackOp.Push(lexem);
+                    }
+                    else if (stackOp.Count == 0)
+                    {
+                        stackOp.Push(lexem);
+                    }
+                    else if (priority > LexemPriorit(stackOp.Peek()))
+                    {
+                        stackOp.Push(lexem);
+                    }
+                    else
+                    {
+                        while (priority <= LexemPriorit(stackOp.Peek()))
+                        {
+                            resultLine.Enqueue(stackOp.Pop());
+                        }
+                        stackOp.Push(lexem);
+                    }
+                }
+                else if (lexem == ")")
+                {
+                    while (stackOp.Peek() != "(")
+                    {
+                        resultLine.Enqueue(stackOp.Pop());
+                        if(stackOp.Count == 0)
+                        {
+                            OpnError();
+                            break;
+                        }
+                    }
+                    stackOp.Pop();
+                }
+            }
+            while(stackOp.Count != 0)
+            {
+                resultLine.Enqueue(stackOp.Pop());
+            }
+            return resultLine;
+        }
+        void OpnError()
+        {
+            try
+            {
+                throw new Exception("В выражении EXPR обнаружены несогласованные скобки!");
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Уведовление", MessageBoxButtons.OK);
+            }
+        }
+        int LexemPriorit(string lexem)
+        {
+            int i = 0;
+            switch (lexem)
+            {
+                case "+": i = 6; break;
+                case "-": i = 6; break;
+                case "*": i = 7; break;
+                case "/": i = 7; break;
+                case "^": i = 8; break;
+                case "<>": i = 5; break;
+                case "<": i = 5; break;
+                case ">": i = 5; break;
+                case "==": i = 5; break;
+                case "or": i = 2; break;
+                case "and": i = 3; break;
+                case "not": i = 4; break;
+                case "(": i = 0; break;
+                case ")": i = 1; break;
+            }
+            return i;
         }
     }
 }
