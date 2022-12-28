@@ -25,7 +25,7 @@ namespace TAkursach
                 switch (state)
                 {
                     case -1:
-                        StateError();
+                        isEnd = true;
                         break;
                     case 0:
                         State0();
@@ -182,10 +182,6 @@ namespace TAkursach
                 return;
             }
         }
-        void StateError()
-        {
-            isEnd = true;
-        }
         void Error(string lexem, string expectedlexems)
         {
             state = -1;
@@ -196,7 +192,6 @@ namespace TAkursach
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK);
-                GoToState(-1);
             }
         }
         void Shift()
@@ -952,21 +947,31 @@ namespace TAkursach
                 }
                 else
                 {
+                    bool flag = false;
                     string temp = "";
                     for(int i = 0; i < 2; i++)
                     {
                         if(stack.Count == 0)
                         {
-                            OpnError($"Вовремя перевода исходного выражения в ОПН была обнаружена недоступная лексема");
+                            flag = true;
+                            OpnError($"Вовремя перевода исходного выражения в ОПН была обнаружена ошибка");
+                            break;
                         }
                         else
                         {
                             temp += stack.Pop() + " ";
                         }
                     }
-                    matrix.Add($"M{m}: {lexem} {temp}");
-                    stack.Push($"M{m}");
-                    m++;
+                    if (flag == true)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        matrix.Add($"M{m}: {lexem} {temp}");
+                        stack.Push($"M{m}");
+                        m++;
+                    }
                 }
             }
             matrix.Add("--------------------------------------------------------------------------------------------");
@@ -1009,9 +1014,16 @@ namespace TAkursach
                     {
                         while (priority <= LexemPriorit(stackOp.Peek()))
                         {
-                            string temp = stackOp.Pop();
-                            resultLine.Enqueue(temp);
-                            tline += temp + " ";
+                            if(stackOp.Count == 0)
+                            {
+                                OpnError("В выражении EXPR обнаружены несогласованные скобки!");
+                            }
+                            else
+                            {
+                                string temp = stackOp.Pop();
+                                resultLine.Enqueue(temp);
+                                tline += temp + " ";
+                            }
                         }
                         stackOp.Push(lexem);
                     }
@@ -1051,7 +1063,6 @@ namespace TAkursach
             catch(Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK);
-                GoToState(-1);
             }
         }
         int LexemPriorit(string lexem)
