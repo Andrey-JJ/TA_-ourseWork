@@ -38,11 +38,12 @@
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.lBDijkstra = new System.Windows.Forms.ListBox();
             this.btn_OpenFile = new System.Windows.Forms.Button();
             this.btnClear = new System.Windows.Forms.Button();
             this.btnSyntax = new System.Windows.Forms.Button();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.lBDijkstra = new System.Windows.Forms.ListBox();
+            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.LexemTable)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.TokensTable)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -57,12 +58,12 @@
             this.tBCode.Location = new System.Drawing.Point(13, 13);
             this.tBCode.Multiline = true;
             this.tBCode.Name = "tBCode";
-            this.tBCode.Size = new System.Drawing.Size(326, 525);
+            this.tBCode.Size = new System.Drawing.Size(434, 442);
             this.tBCode.TabIndex = 0;
             // 
             // btnCheckText
             // 
-            this.btnCheckText.Location = new System.Drawing.Point(13, 544);
+            this.btnCheckText.Location = new System.Drawing.Point(13, 461);
             this.btnCheckText.Name = "btnCheckText";
             this.btnCheckText.Size = new System.Drawing.Size(138, 44);
             this.btnCheckText.TabIndex = 1;
@@ -77,7 +78,7 @@
             this.LexemTable.Name = "LexemTable";
             this.LexemTable.RowHeadersWidth = 51;
             this.LexemTable.RowTemplate.Height = 24;
-            this.LexemTable.Size = new System.Drawing.Size(568, 484);
+            this.LexemTable.Size = new System.Drawing.Size(531, 501);
             this.LexemTable.TabIndex = 2;
             // 
             // lBClassf
@@ -86,7 +87,7 @@
             this.lBClassf.ItemHeight = 16;
             this.lBClassf.Location = new System.Drawing.Point(10, 30);
             this.lBClassf.Name = "lBClassf";
-            this.lBClassf.Size = new System.Drawing.Size(192, 452);
+            this.lBClassf.Size = new System.Drawing.Size(192, 468);
             this.lBClassf.TabIndex = 3;
             // 
             // TokensTable
@@ -96,7 +97,7 @@
             this.TokensTable.Name = "TokensTable";
             this.TokensTable.RowHeadersWidth = 51;
             this.TokensTable.RowTemplate.Height = 24;
-            this.TokensTable.Size = new System.Drawing.Size(366, 452);
+            this.TokensTable.Size = new System.Drawing.Size(325, 468);
             this.TokensTable.TabIndex = 4;
             // 
             // tabControl1
@@ -104,10 +105,10 @@
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
-            this.tabControl1.Location = new System.Drawing.Point(345, 13);
+            this.tabControl1.Location = new System.Drawing.Point(453, 13);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(588, 525);
+            this.tabControl1.Size = new System.Drawing.Size(553, 542);
             this.tabControl1.TabIndex = 5;
             // 
             // tabPage1
@@ -117,7 +118,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 25);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(580, 496);
+            this.tabPage1.Size = new System.Drawing.Size(545, 513);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Таблица лексем";
             // 
@@ -131,7 +132,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(580, 496);
+            this.tabPage2.Size = new System.Drawing.Size(545, 513);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Дополнительные таблицы";
             // 
@@ -153,9 +154,30 @@
             this.label1.TabIndex = 5;
             this.label1.Text = "Таблицы классификаций";
             // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.label3);
+            this.tabPage3.Controls.Add(this.lBDijkstra);
+            this.tabPage3.Location = new System.Drawing.Point(4, 25);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Size = new System.Drawing.Size(545, 513);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Транслятор выражений";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // lBDijkstra
+            // 
+            this.lBDijkstra.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lBDijkstra.FormattingEnabled = true;
+            this.lBDijkstra.ItemHeight = 22;
+            this.lBDijkstra.Location = new System.Drawing.Point(4, 22);
+            this.lBDijkstra.Name = "lBDijkstra";
+            this.lBDijkstra.Size = new System.Drawing.Size(538, 488);
+            this.lBDijkstra.TabIndex = 0;
+            // 
             // btn_OpenFile
             // 
-            this.btn_OpenFile.Location = new System.Drawing.Point(345, 544);
+            this.btn_OpenFile.Location = new System.Drawing.Point(309, 461);
             this.btn_OpenFile.Name = "btn_OpenFile";
             this.btn_OpenFile.Size = new System.Drawing.Size(138, 44);
             this.btn_OpenFile.TabIndex = 6;
@@ -165,7 +187,7 @@
             // 
             // btnClear
             // 
-            this.btnClear.Location = new System.Drawing.Point(489, 544);
+            this.btnClear.Location = new System.Drawing.Point(309, 511);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(138, 44);
             this.btnClear.TabIndex = 7;
@@ -175,7 +197,7 @@
             // 
             // btnSyntax
             // 
-            this.btnSyntax.Location = new System.Drawing.Point(157, 544);
+            this.btnSyntax.Location = new System.Drawing.Point(13, 511);
             this.btnSyntax.Name = "btnSyntax";
             this.btnSyntax.Size = new System.Drawing.Size(138, 44);
             this.btnSyntax.TabIndex = 8;
@@ -183,32 +205,21 @@
             this.btnSyntax.UseVisualStyleBackColor = true;
             this.btnSyntax.Click += new System.EventHandler(this.btnSyntax_Click);
             // 
-            // tabPage3
+            // label3
             // 
-            this.tabPage3.Controls.Add(this.lBDijkstra);
-            this.tabPage3.Location = new System.Drawing.Point(4, 25);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(580, 496);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Дейкстра";
-            this.tabPage3.UseVisualStyleBackColor = true;
-            // 
-            // lBDijkstra
-            // 
-            this.lBDijkstra.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.lBDijkstra.FormattingEnabled = true;
-            this.lBDijkstra.ItemHeight = 22;
-            this.lBDijkstra.Location = new System.Drawing.Point(4, 4);
-            this.lBDijkstra.Name = "lBDijkstra";
-            this.lBDijkstra.Size = new System.Drawing.Size(573, 488);
-            this.lBDijkstra.TabIndex = 0;
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(7, 4);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(115, 16);
+            this.label3.TabIndex = 6;
+            this.label3.Text = "Метод Дейкстры";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(939, 600);
+            this.ClientSize = new System.Drawing.Size(1016, 567);
             this.Controls.Add(this.btnSyntax);
             this.Controls.Add(this.btnClear);
             this.Controls.Add(this.btn_OpenFile);
@@ -227,6 +238,7 @@
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -249,6 +261,7 @@
         private System.Windows.Forms.Button btnSyntax;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.ListBox lBDijkstra;
+        private System.Windows.Forms.Label label3;
     }
 }
 

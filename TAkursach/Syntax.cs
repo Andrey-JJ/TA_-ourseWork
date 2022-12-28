@@ -25,7 +25,7 @@ namespace TAkursach
                 switch (state)
                 {
                     case -1:
-                        isEnd = true;
+                        StateError();
                         break;
                     case 0:
                         State0();
@@ -182,6 +182,10 @@ namespace TAkursach
                 return;
             }
         }
+        void StateError()
+        {
+            isEnd = true;
+        }
         void Error(string lexem, string expectedlexems)
         {
             state = -1;
@@ -192,6 +196,7 @@ namespace TAkursach
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK);
+                GoToState(-1);
             }
         }
         void Shift()
@@ -919,14 +924,17 @@ namespace TAkursach
         void Expr()
         {
             Queue<string> line = new Queue<string>();
+            string tline = "";
             int count = 0;
             while(GetLexeme(nextLex) != "\n")
             {
                 line.Enqueue((GetDijLexeme(nextLex)));
+                tline += GetDijLexeme(nextLex) + " ";
                 Shift();
                 stateStack.Push(100);
                 count++;
             }
+            matrix.Add($"Выражение {tline} было разобрано как:");
             Dijkstra(line);
             Convolution(count, "expr");
         }
@@ -947,18 +955,27 @@ namespace TAkursach
                     string temp = "";
                     for(int i = 0; i < 2; i++)
                     {
-                        temp += stack.Pop() + " ";
+                        if(stack.Count == 0)
+                        {
+                            OpnError($"Вовремя перевода исходного выражения в ОПН была обнаружена недоступная лексема");
+                        }
+                        else
+                        {
+                            temp += stack.Pop() + " ";
+                        }
                     }
                     matrix.Add($"M{m}: {lexem} {temp}");
                     stack.Push($"M{m}");
                     m++;
                 }
             }
+            matrix.Add("--------------------------------------------------------------------------------------------");
         }
         Queue<string> OPN(Queue<string> line)
         {
             Stack<string> stackOp = new Stack<string>();
             Queue<string> resultLine = new Queue<string>();
+            string tline = "";
             while (line.Count != 0)
             {
                 string lexem = line.Dequeue();
@@ -969,6 +986,7 @@ namespace TAkursach
                 else if (lexAnalis.CodeVariables.Contains(lexem) || lexAnalis.CodeLiterals.Contains(lexem))
                 {
                     resultLine.Enqueue(lexem);
+                    tline += lexem + " ";
                 }
                 else if (lexem == "+" || lexem == "-" || lexem == "*" || lexem == "/" || lexem == "^" ||
                         lexem == "==" || lexem == "<>" || lexem == "<" || lexem == ">" ||
@@ -991,7 +1009,9 @@ namespace TAkursach
                     {
                         while (priority <= LexemPriorit(stackOp.Peek()))
                         {
-                            resultLine.Enqueue(stackOp.Pop());
+                            string temp = stackOp.Pop();
+                            resultLine.Enqueue(temp);
+                            tline += temp + " ";
                         }
                         stackOp.Push(lexem);
                     }
@@ -1000,10 +1020,12 @@ namespace TAkursach
                 {
                     while (stackOp.Peek() != "(")
                     {
-                        resultLine.Enqueue(stackOp.Pop());
-                        if(stackOp.Count == 0)
+                        string temp = stackOp.Pop();
+                        resultLine.Enqueue(temp);
+                        tline += temp + " ";
+                        if (stackOp.Count == 0)
                         {
-                            OpnError();
+                            OpnError("В выражении EXPR обнаружены несогласованные скобки!");
                             break;
                         }
                     }
@@ -1012,19 +1034,24 @@ namespace TAkursach
             }
             while(stackOp.Count != 0)
             {
-                resultLine.Enqueue(stackOp.Pop());
+                string temp = stackOp.Pop();
+                resultLine.Enqueue(temp);
+                tline += temp + " ";
             }
+            matrix.Add($"ОПН - {tline}");
             return resultLine;
         }
-        void OpnError()
+        void OpnError(string text)
         {
+            state = -1;
             try
             {
-                throw new Exception("В выражении EXPR обнаружены несогласованные скобки!");
+                throw new Exception(text);
             }
             catch(Exception ex)
             {
-                MessageBox.Show(ex.Message, "Уведовление", MessageBoxButtons.OK);
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK);
+                GoToState(-1);
             }
         }
         int LexemPriorit(string lexem)
